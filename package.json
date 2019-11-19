@@ -1,0 +1,35 @@
+{
+  "name": "reversible-template-string",
+  "version": "1.0.0",
+  "description": "Encode and decode data to string using mustache-like template strings",
+  "main": "dist/index.js",
+  "module": "index.js",
+  "scripts": {
+    "build": "parcel build index.js",
+    "test": "jest",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dealroom/reversible-template-string.git"
+  },
+  "keywords": [
+    "mustache",
+    "template",
+    "encode",
+    "decode"
+  ],
+  "author": "Ash Kyd <ash@kyd.com.au>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dealroom/reversible-template-string/issues"
+  },
+  "homepage": "https://github.com/dealroom/reversible-template-string#readme",
+  "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "babel-jest": "^24.9.0",
+    "jest": "^24.9.0",
+    "parcel-bundler": "^1.12.4"
+  }
+}
