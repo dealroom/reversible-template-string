@@ -9,13 +9,16 @@ describe('encodeTemplate', () => {
       encodeTemplate('my {foo} is a {bar}', { foo: 'other car', bar: 'tardis' })
     ).toEqual('my other car is a tardis');
   });
+  it('should encode array values', () => {
+    expect(encodeTemplate('my [foo]', { foo: ['wordy', 'lordy'] })).toEqual('my wordy,lordy');
+  });
 });
 
 describe('decodeTemplate', () => {
-  it('should return an empty object if no values were parsed', () => {
+  it('should return null if no values were parsed', () => {
     expect(
       decodeTemplate('my {foo}', undefined)
-    ).toEqual({});
+    ).toEqual(null);
   });
   it('should decode a string using a template', () => {
     expect(
@@ -30,6 +33,29 @@ describe('decodeTemplate', () => {
     ).toEqual({
       foo: 'other car',
       bar: 'tardis'
+    });
+  });
+  it('should decode array values', () => {
+    expect(
+      decodeTemplate('my [foo]', "my wordy,lordy")
+    ).toEqual({
+      foo: ['wordy', 'lordy']
+    });
+  });
+  it('should decode a single array value', () => {
+    expect(
+      decodeTemplate('my [foo]', "my wordy")
+    ).toEqual({
+      foo: ['wordy']
+    });
+  });
+  it('should decode in the correct order', () => {
+    expect(
+      decodeTemplate('my [foo], {bar} how [adjectives]', "my wordy, lordy how interesting,unusual")
+    ).toEqual({
+      foo: ['wordy'],
+      bar: 'lordy',
+      adjectives: ['interesting','unusual']
     });
   });
 });

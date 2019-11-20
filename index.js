@@ -2,9 +2,13 @@
  * A regex to match {template} strings.
  */
 const templateString = /\{.+?\}/g;
+const templateArray = /\[.+?\]/g;
 
 function sanitiseVarName(variable) {
   return variable.slice(1, -1);
+}
+function toArray(string) {
+  return string.split(",");
 }
 
 /**
@@ -15,24 +19,40 @@ function sanitiseVarName(variable) {
  */
 function getReadRegex(template) {
   const variableNames = [];
-  const regex = template.replace(templateString, name => {
-    variableNames.push(sanitiseVarName(name));
-    return '(.*)';
-  });
+  let regex = template;
+
+  // Replace our strings and arrays
+  [[templateString, String], [templateArray, toArray]].forEach(
+    ([templateString, parse]) => {
+      regex = regex.replace(templateString, (name, offset) => {
+        variableNames.push({ name: sanitiseVarName(name), parse, offset });
+        return "(.*)";
+      });
+    }
+  );
+
+  variableNames.sort((a,b) => a.offset - b.offset);
   return { variableNames, regex };
 }
 
 /**
  * Encode a template with the given variables.
+ * NOTE: values must not include curly braces or commas.
  * @param  {String} template Template string
  * @param  {String} values   Object of values to insert in the string
  * @return {String}          The templatee with the values encoded
  */
 export function encodeTemplate(template, values) {
-  return template.replace(templateString, name => {
-    const value = values[sanitiseVarName(name)];
-    return value;
-  });
+  return (
+    template
+      // replace our strings
+      .replace(templateString, name => values[sanitiseVarName(name)])
+      // encode and replace our arrays
+      .replace(templateArray, name => {
+        const value = values[sanitiseVarName(name)];
+        return Array.isArray(value) ? value.join() : value;
+      })
+  );
 }
 
 /**
@@ -44,10 +64,13 @@ export function encodeTemplate(template, values) {
 export function decodeTemplate(template, string) {
   const { variableNames, regex } = getReadRegex(template);
   const match = String(string).match(regex);
-  if (!match) return {};
+  if (!match) return null;
   const values = {};
+
+  // for each match, parse it using the given type.
   match.slice(1).forEach((value, index) => {
-    values[variableNames[index]] = value;
+    const { name, parse } = variableNames[index];
+    values[name] = parse(value);
   });
   return values;
 }
