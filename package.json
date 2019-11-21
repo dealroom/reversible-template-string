@@ -7,7 +7,8 @@
   "scripts": {
     "build": "parcel build index.js",
     "test": "jest",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "install": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,7 @@
     "url": "https://github.com/dealroom/reversible-template-string/issues"
   },
   "homepage": "https://github.com/dealroom/reversible-template-string#readme",
-  "devDependencies": {
+  "dependencies": {
     "@babel/core": "^7.7.2",
     "@babel/preset-env": "^7.7.1",
     "babel-jest": "^24.9.0",
