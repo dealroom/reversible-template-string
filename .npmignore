@@ -1,1 +1,4 @@
 test
+.cache
+babel.config.js
+README.md
