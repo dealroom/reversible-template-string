@@ -2,6 +2,17 @@
 Encode and decode data to string using mustache-like template strings
 
 # Usage
+
+To get started, install and import the package:
+
+```
+npm i reversible-template-string
+```
+
+```js
+import { encodeTemplate, decodeTemplate } from 'reversible-template-string';
+```
+
 ## Functions
 
 <dl>
